@@ -4,13 +4,14 @@ namespace Beerfranz\ExecutionContext\AppTest\Entity;
 
 use Beerfranz\ExecutionContext\AppTest\DoctrineListener\TenantListener;
 use Beerfranz\ExecutionContext\AppTest\Repository\TenantRepository;
+use Beerfranz\ExecutionContext\Entity\ExecutionContextTenantInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TenantRepository::class)]
 #[ORM\Table(name: 'tenant')]
 #[ORM\EntityListeners([TenantListener::class])]
-class Tenant
+class Tenant implements ExecutionContextTenantInterface
 {
     
     #[ORM\Id]
@@ -50,5 +51,10 @@ class Tenant
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getTenantIdentifier(): string
+    {
+        return $this->uuid->toString();
     }
 }

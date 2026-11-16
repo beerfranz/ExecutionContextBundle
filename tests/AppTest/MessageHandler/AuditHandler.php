@@ -37,6 +37,7 @@ class AuditHandler
       ->setDatetime($datetime)
       ->setCausationId($message->getCausationId())
       ->setCorrelationId($message->getCorrelationId())
+      ->setTenantId(Uuid::fromString($message->getTenantId()))
     ;
 
     $this->repo->getEntityManager()->persist($audit);

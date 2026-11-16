@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Beerfranz\ExecutionContext\AppTest\DoctrineListener\AuditListener;
 use Beerfranz\ExecutionContext\AppTest\Repository\AuditRepository;
+use Beerfranz\ExecutionContext\Entity\ExecutionContextTenantInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 
@@ -27,7 +28,7 @@ use Symfony\Component\Uid\Uuid;
     'actor' => 'exact',
     'subjectKind' => 'exact',
 ])]
-class Audit
+class Audit implements ExecutionContextTenantInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -55,6 +56,9 @@ class Audit
 
     #[ORM\Column(type: 'uuid', nullable: true)]
     private ?Uuid $causationId = null;
+
+    #[ORM\Column(type: 'uuid', nullable: true)]
+    private ?Uuid $tenantId = null;
 
     public function getId(): int
     {
@@ -143,5 +147,22 @@ class Audit
         $this->causationId = $causationId;
 
         return $this;
+    }
+
+    public function getTenantId(): ?Uuid
+    {
+        return $this->tenantId;
+    }
+
+    public function setTenantId(?Uuid $tenantId): static
+    {
+        $this->tenantId = $tenantId;
+
+        return $this;
+    }
+
+    public function getTenantIdentifier(): string
+    {
+        return $this->tenantId->toString();
     }
 }

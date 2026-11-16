@@ -24,7 +24,7 @@ class TenantListener
         $message->auditSubjectKind = 'tenant';
         $message->auditSubjectId = $tenant->getUuid();
         $message->source = 'tenant';
-        $message->setTenantId($tenant->getUuid());
+        $message->setTenantId($tenant->getTenantIdentifier());
         $message->eventType = 'tenant.created';
         $message->auditAction = 'create';
         $message->setUserId($this->executionContext->getUser()->getUserIdentifier());
