@@ -70,14 +70,14 @@ class FunctionalTest extends ApiTestCase
         $this->user1 = (new User())
             ->setUsername('user1')
             ->setUuid(Uuid::v7())
-            ->setRoles(['ROLE_ADMIN'])
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
         ;
         $this->em->persist($this->user1);
 
         $this->user2 = (new User())
             ->setUsername('user2')
             ->setUuid(Uuid::v7())
-            ->setRoles(['ROLE_ADMIN'])
+            ->setRoles(['ROLE_USER'])
         ;
         $this->em->persist($this->user2);
 
@@ -184,6 +184,15 @@ class FunctionalTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
 
         $this->assertFlow('httpTenant', $this->user1->getUserIdentifier());
+
+        static::createClient()->request(
+            'GET',
+            '/tenants',
+            [
+                'headers' => [ 'x-token-username' => $this->user2->getUsername() ]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
     }
 
     // The fallback user must be "unknown"

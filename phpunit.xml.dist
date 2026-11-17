@@ -5,7 +5,9 @@
          colors="true"
          failOnWarning="true"
          failOnRisky="true"
-         displayDetailsOnTestsThatTriggerDeprecations="true">
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+    >
     <php>
         <server name="KERNEL_CLASS" value="Beerfranz\ExecutionContext\Tests\TestKernel" />
         <server name="KERNEL_DIR" value="tests/" />

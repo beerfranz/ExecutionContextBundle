@@ -118,6 +118,13 @@ class ExecutionContext implements ResetInterface
         return new ExecutionContextInternalUser($this->getFallbackIdentifier($internalUserKey));
     }
 
+    public function isInternalUser(?string $userId = null): bool
+    {
+        if ($userId === null)
+            $userId = $this->user->getUserIdentifier();
+        return (bool) array_search($userId, $this->fallbackIdentifiers, true);
+    }
+
     public function getContext(): string
     {
         return $this->context;

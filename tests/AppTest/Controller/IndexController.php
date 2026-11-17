@@ -22,4 +22,13 @@ class IndexController extends AbstractController
             'name' => $tenant->getName()
         ]);
     }
+
+    #[Route('/tenants', name: 'getTenant', methods: ['GET'])]
+    public function getTenant(Request $request, TenantService $service): JsonResponse
+    {
+        $datas = $service->find();
+        return new JsonResponse([
+            'data' => $datas,
+        ]);
+    }
 }
