@@ -69,7 +69,7 @@ class TenantVoter extends Voter
         $context = $this->executionContext->getContext();
         $user = $this->executionContext->getUser();
 
-        if ($this->executionContext->isInternalUser()) {
+        if ($this->executionContext->isInternalUser() && !$this->executionContext->isHttp()) {
             return true;
         }
 
