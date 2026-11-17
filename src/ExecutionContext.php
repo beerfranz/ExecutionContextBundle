@@ -82,19 +82,23 @@ class ExecutionContext implements ResetInterface
 
     public function resolveUserId(?string $userId = null, ?string $context = null): UserInterface
     {
-        $user = null;
 
-        // Start to resolve in user repository first
         if ($userId !== null)
         {
+            // Try to resolve from user repository
             $user = $this->registry->getRepository($this->userClass)->loadUserByIdentifier($userId);
+            if ($user !== null)
+                return $user;
+
+            // Resolve from internal user
+            $user = $this->findInternalUser($userId);
             if ($user !== null)
                 return $user;
         }
 
         // Otherwise, try to initiate an user entity dynamically
         $user = new ExecutionContextInternalUser($this->getFallbackIdentifier($context));
-        
+
         return $user;
     }
 
@@ -103,6 +107,15 @@ class ExecutionContext implements ResetInterface
         if (isset($this->fallbackIdentifiers[$context]))
             return $this->fallbackIdentifiers[$context];
         return $this->fallbackIdentifiers['default'];
+    }
+
+    public function findInternalUser(string $userId): ?ExecutionContextInternalUser
+    {
+        $internalUserKey = array_search($userId, $this->fallbackIdentifiers, true);
+        if ($internalUserKey === false)
+            return null;
+
+        return new ExecutionContextInternalUser($this->getFallbackIdentifier($internalUserKey));
     }
 
     public function getContext(): string

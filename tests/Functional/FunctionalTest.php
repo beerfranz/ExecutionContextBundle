@@ -98,13 +98,12 @@ class FunctionalTest extends ApiTestCase
         $repo = self::getContainer()->get(TenantRepository::class);
         $this->assertEquals(1, count($repo->findAll()));
 
-        $this->transport('audit')->process();
-
         $auditRepo = self::getContainer()->get(AuditRepository::class);
         $audits = $auditRepo->findAll();
         $this->assertEquals(1, count($audits));
         
-        $this->assertEquals(self::getFallbackUserIdentifier('messenger'), $audits[0]->getActor());
+        // expected user is default
+        $this->assertEquals(self::getFallbackUserIdentifier('default'), $audits[0]->getActor());
     }
 
     public function testCommandUnknownActor(): void
@@ -124,7 +123,8 @@ class FunctionalTest extends ApiTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Tenant newTenant created', $output);
 
-        $this->assertFlow($tenantName, self::getFallbackUserIdentifier('messenger'));
+        // expect user is default because this command doestn't support identification
+        $this->assertFlow($tenantName, self::getFallbackUserIdentifier('default'));
     }
 
     public function testCommandUser1(): void
@@ -146,6 +146,27 @@ class FunctionalTest extends ApiTestCase
         $this->assertStringContainsString('Tenant newTenant created', $output);
 
         $this->assertFlow($tenantName, $this->user1->getUserIdentifier());
+    }
+
+    public function testCommandBadUser(): void
+    {
+        // Create tenant via command console without identity
+        $tenantName = 'newTenant';
+        $application = new Application(self::$kernel);
+        $command = $application->find('app:tenant:create-extended');
+        $commandTester = new CommandTester($command);
+
+        $commandTester->execute([
+            'name' => $tenantName,
+            '--user' => 'IDoNotExists',
+        ]);
+
+        // Check command succeed
+        $commandTester->assertCommandIsSuccessful();
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Tenant newTenant created', $output);
+
+        $this->assertFlow($tenantName, self::getFallbackUserIdentifier('command'));
     }
 
     // Test HTTP request + message

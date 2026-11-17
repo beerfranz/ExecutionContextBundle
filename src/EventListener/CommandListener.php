@@ -3,6 +3,7 @@
 namespace Beerfranz\ExecutionContext\EventListener;
 
 use Beerfranz\ExecutionContext\ExecutionContext;
+use Beerfranz\ExecutionContext\Command\ExecutionContextCommandInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -29,18 +30,23 @@ class CommandListener implements EventSubscriberInterface
     {
         $command = $event->getCommand();
 
-        if (! $command instanceof ExecutionContextCommandInterface)
-            return;
+        $dryrun = false;
 
-        $input   = $event->getInput();
-        $userId = $input->getOption('user');
+        if ($command instanceof ExecutionContextCommandInterface)
+        {
+            $input   = $event->getInput();
+            $userId = $input->getOption('user');
+            $dryrun = (bool) $input->getOption('dryrun');
+        } else {
+            $userId = null;
+        }
 
         $user = $this->executionContext->resolveUserId($userId, ExecutionContext::COMMAND);
 
         $this->executionContext->init(
             ExecutionContext::COMMAND,
             $user,
-            (bool) $input->getOption('dryrun'),
+            $dryrun,
         );
     }
 }

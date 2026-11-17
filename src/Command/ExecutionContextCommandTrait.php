@@ -35,27 +35,15 @@ trait ExecutionContextCommandTrait {
 		$context->reset();
 
 		$user = null;
-		$userIdentifier = $input->getOption('user');
+		$userId = $input->getOption('user');
+		$dryrun = $input->getOption('dryrun');
 
-		if ($userIdentifier !== null) {
-			try {
-				$user = $this->userProvider->loadUserByIdentifier($userIdentifier);
-			} catch (UserNotFoundException $e) {
-				throw new \InvalidArgumentException(
-					sprintf('User "%s" not found. Did the idenfitier corresponding to security.providers.app_user_provider.entity.property key or user repository method loadUserByIdentifier()?'),
-					0,
-					$e,
-				);
-			}
-		} else {
-			$user = $context->generateUser('ROOT');
-		}
+		$user = $this->executionContext->resolveUserId($userId, ExecutionContext::COMMAND);
 
-		$context->init(
-			ExecutionContext::COMMAND,
-			$user,
-			(bool) $input->getOption('dryrun'),
-		);
+        $this->executionContext->init(
+            ExecutionContext::COMMAND,
+            $user,
+            $dryrun,
+        );
 	}
-
 }
