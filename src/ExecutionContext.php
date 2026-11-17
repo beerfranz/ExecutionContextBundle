@@ -160,9 +160,9 @@ class ExecutionContext implements ResetInterface
         return $this->context === self::COMMAND;
     }
 
-    public function enableDryRun(): self
+    public function setDryRun(bool $dryrun): self
     {
-        $this->dryrun = true;
+        $this->dryrun = $dryrun;
         return $this;
     }
 

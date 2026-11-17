@@ -146,6 +146,14 @@ class FunctionalTest extends ApiTestCase
         $this->assertStringContainsString('Tenant newTenant created', $output);
 
         $this->assertFlow($tenantName, $this->user1->getUserIdentifier());
+
+        $commandTester->execute([
+            'name' => $tenantName,
+            '--user' => $this->user1->getUserIdentifier(),
+            '--dryrun' => true,
+        ]);
+        $output = $commandTester->getDisplay();
+        $commandTester->assertCommandIsSuccessful();
     }
 
     public function testCommandBadUser(): void
@@ -190,6 +198,16 @@ class FunctionalTest extends ApiTestCase
             '/tenants',
             [
                 'headers' => [ 'x-token-username' => $this->user2->getUsername() ]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+
+        static::createClient()->request(
+            'POST',
+            '/tenants',
+            [
+                'json' => [ 'name' => 'httpTenant' ],
+                'headers' => [ 'x-token-username' => $this->user1->getUsername(), 'x-use-condom' => 'true' ]
             ]
         );
         $this->assertResponseStatusCodeSame(200);
