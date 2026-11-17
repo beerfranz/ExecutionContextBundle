@@ -2,14 +2,14 @@
 
 namespace Beerfranz\ExecutionContext\Exception;
 
-class DryRunException
+class DryRunException extends \Exception
 {
 	public function __construct(
 		protected mixed $data = null,
-	)
+	) {}
 
 	public function getData(): mixed
 	{
-		return $data;
+		return $this->data;
 	}
 }
