@@ -53,8 +53,18 @@ class TenantVoter extends Voter
         $context = $this->executionContext->getContext();
         $user = $this->executionContext->getUser();
 
-        if (in_array('ROLE_USER', $user->getRoles()))
+        if ($this->executionContext->isMessenger()) {
             return true;
+        }
+
+        if ($this->executionContext->isCommand()) {
+            return true;
+        }
+
+        if ($this->executionContext->isInteractive()) {
+            if (in_array('ROLE_USER', $user->getRoles()))
+                return true;
+        }
 
         $reason = 'ROLE_USER not assigned';
         $vote?->addReason($reason);
