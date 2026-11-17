@@ -7,8 +7,6 @@ use Symfony\Component\Uid\Uuid;
 
 class AuditMessage extends Message
 {
-	// Emitter source
-	public ?string $source = null;
 
 	// ex: user.created, component.updated
 	public ?string $eventType = null;

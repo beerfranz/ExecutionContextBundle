@@ -47,16 +47,11 @@ monolog:
             path: php://stderr
             level: warning
             channels: ["doctrine","messenger"]
-        # deprecation:
-        #     type: stream
-        #     path: php://stderr
-        #     level: debug
-        #     channels: ["deprecation"]
         otherChans:
             type: stream
             path: php://stderr
             level: info
-            channels: ["!doctrine","!messenger"]
+            channels: ["!doctrine","!messenger", "!app"]
         # memory:
         #     type: test
         #     level: info

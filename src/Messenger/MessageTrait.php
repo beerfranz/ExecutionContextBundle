@@ -26,6 +26,11 @@ trait MessageTrait
 	// Tenant identifier
 	protected ?string $tenantId = null;
 
+	// The Id of the producer of the message
+	protected ?string $producerId = null;
+
+	
+
 	// Message version
 	protected int $version = 1;
 
@@ -35,7 +40,7 @@ trait MessageTrait
 	    $this->eventId = Uuid::v7();
 	    $this->timestamp = new \DateTimeImmutable();
 	    $this->version = 1;
-	    $this->correlationId = Uuid::v7();
+	    $this->correlationId = $this->eventId;
   	}
 
 	public function setParent(MessageInterface $parent)
@@ -103,4 +108,17 @@ trait MessageTrait
 	{
 		return $this->timestamp;
 	}
+
+	public function getProducerId(): ?string
+	{
+		return $this->producerId;
+	}
+
+	public function setProducerId(?string $producerId): self
+	{
+		$this->producerId = $producerId;
+		return $this;
+	}
+
+
 }

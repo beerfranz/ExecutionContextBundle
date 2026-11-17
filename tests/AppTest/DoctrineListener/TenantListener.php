@@ -21,11 +21,11 @@ class TenantListener
 
     public function postPersist(Tenant $tenant, PostPersistEventArgs $event)
     {
-        $message = new AuditMessage();
+        $message = $this->executionContext->newMessage(AuditMessage::class);
 
         $message->auditSubjectKind = 'tenant';
         $message->auditSubjectId = $tenant->getUuid();
-        $message->source = 'tenant';
+        $message->setProducerId('tenant');
         $message->setTenantId($tenant->getTenantIdentifier());
         $message->eventType = 'tenant.created';
         $message->auditAction = 'create';

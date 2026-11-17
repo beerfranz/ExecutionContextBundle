@@ -12,8 +12,6 @@ class Message implements MessageInterface
 
   use MessageTrait;
 
-  // Emitter source
-  public ?string $source = null;
 
   // ex: user.created, component.updated
   public ?string $eventType = null;

@@ -19,11 +19,11 @@ class AuditListener
 
     public function postPersist(Audit $audit, PostPersistEventArgs $event)
     {
-        $message = new AuditBackupMessage();
+        $message = $this->executionContext->newMessage(AuditBackupMessage::class);
 
         $message->auditSubjectKind = $audit->getSubjectKind();
         $message->auditSubjectId = $audit->getSubject();
-        $message->source = 'audit';
+        $message->setProducerId('audit');
         $message->setTenantId($audit->getTenantIdentifier());
         $message->eventType = 'tenant.created';
         $message->auditAction = 'create';
