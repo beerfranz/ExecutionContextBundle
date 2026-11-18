@@ -55,9 +55,17 @@ class UnitTest extends KernelTestCase
 
         $this->assertEquals(1, $message->getVersion());
         $this->assertEquals(null, $message->getProducerId());
+        $this->assertEquals(1, $message->getPayloadVersion());
 
         $message->setProducerId('me');
         $this->assertEquals('me', $message->getProducerId());
+        $message->setPayload(['data' => 'foo']);
+        $this->assertEquals(['data' => 'foo'], $message->getPayload());
+        $message->setEventType('tenent.created');
+        $this->assertEquals('tenent.created', $message->getEventType());
+        $message->setPayloadVersion(2);
+        $this->assertEquals(2, $message->getPayloadVersion());
+
 
         $childMessage = new Message();
         $childMessage->setParent($message);

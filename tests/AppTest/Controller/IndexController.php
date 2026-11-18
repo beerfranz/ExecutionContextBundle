@@ -3,6 +3,7 @@
 namespace Beerfranz\ExecutionContext\AppTest\Controller;
 
 use Beerfranz\ExecutionContext\AppTest\Service\TenantService;
+use Beerfranz\ExecutionContext\ExecutionContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +30,16 @@ class IndexController extends AbstractController
         $datas = $service->find();
         return new JsonResponse([
             'data' => $datas,
+        ]);
+    }
+
+    #[Route('/whoami', name: 'whoami', methods: ['GET'])]
+    public function getPublic(Request $request, ExecutionContext $executionContext): JsonResponse
+    {
+        return new JsonResponse([
+            'userIdentifier' => $executionContext->getUser()->getUserIdentifier(),
+            'context' => $executionContext->getContext(),
+            'dryrun' => $executionContext->isDryRun(),
         ]);
     }
 }

@@ -74,8 +74,8 @@ security:
                 - Beerfranz\ExecutionContext\AppTest\Authenticator\HeaderAuthenticator
 
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/tenants, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/whoami, roles: PUBLIC_ACCESS }
 
 api_platform:
     mapping:

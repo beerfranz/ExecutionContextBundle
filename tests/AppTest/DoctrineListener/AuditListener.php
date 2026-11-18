@@ -29,7 +29,7 @@ class AuditListener
         $message->auditSubjectId = $audit->getSubject();
         $message->setProducerId('audit');
         $message->setTenantId($audit->getTenantIdentifier());
-        $message->eventType = 'tenant.created';
+        $message->setEventType('tenant.created');
         $message->auditAction = 'create';
         $message->setUserId($this->executionContext->getUser()->getUserIdentifier());
         $this->bus->dispatch($message);

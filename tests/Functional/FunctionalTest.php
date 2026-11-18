@@ -213,6 +213,49 @@ class FunctionalTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
     }
 
+    public function testHttpWhoami(): void
+    {
+        static::createClient()->request(
+            'GET',
+            '/whoami',
+            [
+                'headers' => [ 'x-token-username' => $this->user1->getUsername() ]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertJsonContains([
+            'userIdentifier' => $this->user1->getUuid()->toString(),
+            'context' => 'http',
+            'dryrun' => false,
+        ]);
+
+        static::createClient()->request(
+            'GET',
+            '/whoami'
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertJsonContains([
+            'userIdentifier' => self::getFallbackUserIdentifier('http'),
+            'context' => 'http',
+            'dryrun' => false,
+        ]);
+
+        static::createClient()->request(
+            'GET',
+            '/whoami',
+            [
+                'headers' => [ 'x-use-condom' => 'true' ]
+            ]
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertJsonContains([
+            'userIdentifier' => self::getFallbackUserIdentifier('http'),
+            'context' => 'http',
+            'dryrun' => true,
+        ]);
+
+    }
+
     // The fallback user must be "unknown"
     public function testMessengerWithFakeUser(): void
     {

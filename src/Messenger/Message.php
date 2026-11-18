@@ -12,12 +12,4 @@ class Message implements MessageInterface
 
   use MessageTrait;
 
-
-  // ex: user.created, component.updated
-  public ?string $eventType = null;
-	
-
-  public int $payloadVersion = 1;
-  public array $payload = [];
-
 }

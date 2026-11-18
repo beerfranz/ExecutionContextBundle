@@ -20,6 +20,11 @@ trait MessageTrait
 	// Direct message parent
 	protected ?string $causationId = null;
 
+	// Message version
+	protected int $version = 1;
+
+	protected bool $dryrun = false;
+
 	// User identifier
 	protected ?string $userId = null;
 
@@ -29,11 +34,12 @@ trait MessageTrait
 	// The Id of the producer of the message
 	protected ?string $producerId = null;
 
-	// Message version
-	protected int $version = 1;
+	// Type of event of the producer
+	protected ?string $eventType = null;
 
-	protected bool $dryrun = false;
-	
+	protected int $payloadVersion = 1;
+	protected array $payload = [];
+
 	public function __construct(?string $eventId = null) {
 		if ($eventId === null)
 			$eventId = Uuid::v7()->toString();
@@ -118,6 +124,39 @@ trait MessageTrait
 	public function setProducerId(?string $producerId): self
 	{
 		$this->producerId = $producerId;
+		return $this;
+	}
+
+	public function getEventType(): ?string
+	{
+		return $this->eventType;
+	}
+
+	public function setEventType(?string $eventType): self
+	{
+		$this->eventType = $eventType;
+		return $this;
+	}
+
+	public function getPayloadVersion(): ?int
+	{
+		return $this->payloadVersion;
+	}
+
+	public function setPayloadVersion(?int $payloadVersion): self
+	{
+		$this->payloadVersion = $payloadVersion;
+		return $this;
+	}
+
+	public function getPayload(): ?array
+	{
+		return $this->payload;
+	}
+
+	public function setPayload(?array $payload): self
+	{
+		$this->payload = $payload;
 		return $this;
 	}
 }
