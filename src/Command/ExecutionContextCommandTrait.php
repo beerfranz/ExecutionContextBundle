@@ -2,48 +2,34 @@
 
 namespace Beerfranz\ExecutionContext\Command;
 
-use Beerfranz\ExecutionContext\ExecutionContext;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Beerfranz\ExecutionContext\Command\CommandInterface;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 trait ExecutionContextCommandTrait {
 
-	protected function configureUserInput(): self
-	{
-		return $this->addOption(
-			'user',
-			'u',
-			InputOption::VALUE_REQUIRED,
-			'user'
-		);
-	}
+	public function initFromEventCommand(ConsoleCommandEvent $event): void
+    {
+		$command = $event->getCommand();
 
-	protected function configureDryrunInput(): self
-	{
-		return $this->addOption(
-			'dryrun',
-			'd',
-			InputOption::VALUE_NONE,
-			'Enable dry-run mode'
-		);
-	}
+		if ($command instanceof CommandInterface)
+        {
+            $input   = $event->getInput();
+            $userId = $input->getOption('user');
+            $dryrun = (bool) $input->getOption('dryrun');
+            $this->initFromCommand($userId, $dryrun);
+        } else {
+            $this->initFromCommand();
+        }
+    }
 
-	// Usage: $this->setExecutionContext($this->executionContext, $input);
-	protected function setExecutionContext(ExecutionContext $context, InputInterface $input): void
-	{
-		$context->reset();
+    public function initFromCommand(?string $userId = null, bool $dryrun = false): void
+    {
+    	$user = $this->resolveUserId($userId, self::COMMAND);
 
-		$user = null;
-		$userId = $input->getOption('user');
-		$dryrun = $input->getOption('dryrun');
-
-		$user = $this->executionContext->resolveUserId($userId, ExecutionContext::COMMAND);
-
-        $this->executionContext->init(
-            ExecutionContext::COMMAND,
+        $this->init(
+            self::COMMAND,
             $user,
             $dryrun,
         );
-	}
+    }
 }

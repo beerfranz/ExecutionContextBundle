@@ -19,10 +19,9 @@ class CreateTenantExtendedCommand extends AbstractCommand
 	public function __construct(
         protected TenantService $service,
         ExecutionContext $executionContext,
-        UserProviderInterface $userProvider,
 	)
     {
-        parent::__construct($executionContext, $userProvider);
+        parent::__construct($executionContext);
     }
 
 	protected function configure(): void
@@ -35,9 +34,13 @@ class CreateTenantExtendedCommand extends AbstractCommand
         parent::configure();
     }
 
+    protected function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        parent::initialize($input, $output);
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->setExecutionContext($this->executionContext, $input);
     	try {
             $name = $input->getArgument('name');
             $tenant = $this->service->create($name);

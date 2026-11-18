@@ -7,7 +7,6 @@ services:
     beerfranz_execution_context.event_listener.command:
         class: Beerfranz\ExecutionContext\EventListener\CommandListener
         arguments:
-            $userClass: '%beerfranz_execution_context.user_class%'
             $executionContext: '@beerfranz_execution_context.execution_context'
 
     beerfranz_execution_context.event_listener.messenger:

@@ -2,6 +2,6 @@
 
 namespace Beerfranz\ExecutionContext\Command;
 
-interface ExecutionContextCommandInterface
+interface CommandInterface
 {
 }

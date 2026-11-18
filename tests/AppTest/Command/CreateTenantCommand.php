@@ -33,7 +33,7 @@ class CreateTenantCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
     	try {
-            $this->executionContext->init(ExecutionContext::COMMAND);
+            $this->executionContext->initFromCommand();
             $name = $input->getArgument('name');
             $tenant = $this->service->create($name);
 

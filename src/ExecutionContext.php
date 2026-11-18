@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Beerfranz\ExecutionContext;
 
+use Beerfranz\ExecutionContext\Command\ExecutionContextCommandTrait;
 use Beerfranz\ExecutionContext\Entity\ExecutionContextInternalUser;
 use Beerfranz\ExecutionContext\Messenger\ExecutionContextMessengerTrait;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,7 +15,9 @@ use Symfony\Contracts\Service\ResetInterface;
 
 class ExecutionContext implements ResetInterface
 {
-    use ExecutionContextMessengerTrait;
+    use ExecutionContextMessengerTrait,
+        ExecutionContextCommandTrait
+    ;
 
     protected string $context;
     protected ?UserInterface $user;
