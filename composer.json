@@ -1,0 +1,46 @@
+{
+    "name": "beerfranz/execution-context-bundle",
+    "description": "Symfony bundle providing an ExecutionContext (current user + execution context).",
+    "version": "0.1.0",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "symfony/console": "^6.0 || ^7.0",
+        "symfony/framework-bundle": "^6.0 || ^7.0",
+        "symfony/messenger": "^6.0 || ^7.0",
+        "symfony/security-bundle": "^6.0 || ^7.0",
+        "symfony/uid": "^6.0 || ^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beerfranz\\ExecutionContext\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Beerfranz\\ExecutionContext\\Tests\\": "tests/",
+            "Beerfranz\\ExecutionContext\\AppTest\\": "tests/AppTest/"
+        }
+    },
+    "require-dev": {
+        "api-platform/core": "^4.3",
+        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
+        "doctrine/orm": "^3.2",
+        "phpunit/phpunit": "^10.5",
+        "symfony/browser-kit": "^8.1",
+        "symfony/http-client": "^8.1",
+        "symfony/messenger": "^6.0 || ^7.0",
+        "symfony/monolog-bundle": "^3.10",
+        "symfony/var-exporter": "^6.0 || ^7.0",
+        "symfony/yaml": "^6.0 || ^7.0",
+        "zenstruck/messenger-test": "^1.12"
+    },
+    "suggest": {
+        "open-telemetry/api": "To propagate the current trace ID into the ExecutionContext."
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

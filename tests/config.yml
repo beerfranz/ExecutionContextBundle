@@ -1,0 +1,118 @@
+framework:
+    secret: "test"
+    test: true
+    router:
+        utf8: true
+        resource: '%kernel.project_dir%/tests/routes.yml'
+    validation:
+    messenger:
+        transports:
+            audit: test://
+            auditBackup: test://
+            orphaned: test://
+        routing:
+            'Beerfranz\ExecutionContext\AppTest\Message\AuditMessage': audit
+            'Beerfranz\ExecutionContext\AppTest\Message\AuditBackupMessage': auditBackup
+
+doctrine:
+    dbal:
+        driver: "pdo_sqlite"
+        path:   "%kernel.cache_dir%/../database.db3"
+
+    orm:
+        mappings:
+            Test:
+                type: attribute
+                dir: '%kernel.project_dir%/tests/AppTest/Entity'
+                prefix: 'Beerfranz\ExecutionContext\AppTest\Entity'
+                alias: Test
+
+# monolog:
+#     handlers:
+#         memory:
+#             type: test
+#             level: debug
+monolog:
+    handlers:
+        # trash:
+        #     type: stream
+        #     path: php://stderr
+        #     level: debug
+        app:
+            type: stream
+            path: php://stderr
+            level: error
+            channels: ["app"]
+        error:
+            type: stream
+            path: php://stderr
+            level: warning
+            channels: ["doctrine","messenger","request","security"]
+        otherChans:
+            type: stream
+            path: php://stderr
+            level: info
+            channels: ["!doctrine","!messenger", "!app","!request","!security"]
+        # memory:
+        #     type: test
+        #     level: info
+
+security:
+    providers:
+        app_user_provider:
+            entity:
+                class: Beerfranz\ExecutionContext\AppTest\Entity\User
+                # property: username
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            stateless: true
+            provider: app_user_provider
+            custom_authenticators:
+                - Beerfranz\ExecutionContext\AppTest\Authenticator\HeaderAuthenticator
+
+    access_control:
+        - { path: ^/tenants, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/whoami, roles: PUBLIC_ACCESS }
+
+api_platform:
+    mapping:
+        paths:
+        - '%kernel.project_dir%/tests/AppTest/Entity'
+
+beerfranz_execution_context:
+    user_class: 'Beerfranz\ExecutionContext\AppTest\Entity\User'
+    fallback_user_identifiers:
+        default: default
+        http: default-http
+        command: default-command
+        messenger: default-messenger
+        # default: 00000000-0000-8000-a000-000000000000
+        # http: 00000000-0000-8000-a000-000000000001
+        # command: 00000000-0000-8000-a000-000000000002
+        # messenger: 00000000-0000-8000-a000-000000000003
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    Beerfranz\ExecutionContext\AppTest\:
+        resource: 'AppTest/'
+        exclude:
+        - 'AppTest/Entity/'
+
+    Beerfranz\ExecutionContext\EventListener\HttpListener:
+        tags:
+        - kernel.event_subscriber
+
+    Beerfranz\ExecutionContext\EventListener\MessengerListener:
+        tags:
+        - kernel.event_subscriber
+
+    Beerfranz\ExecutionContext\EventListener\CommandListener:
+        tags:
+        - kernel.event_subscriber

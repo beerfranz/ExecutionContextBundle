@@ -1,0 +1,27 @@
+services:
+    beerfranz_execution_context.event_listener.http:
+        class: Beerfranz\ExecutionContext\EventListener\HttpListener
+        arguments:
+            $executionContext: '@beerfranz_execution_context.execution_context'
+
+    beerfranz_execution_context.event_listener.command:
+        class: Beerfranz\ExecutionContext\EventListener\CommandListener
+        arguments:
+            $executionContext: '@beerfranz_execution_context.execution_context'
+
+    beerfranz_execution_context.event_listener.messenger:
+        class: Beerfranz\ExecutionContext\EventListener\MessengerListener
+        arguments:
+            $executionContext: '@beerfranz_execution_context.execution_context'
+
+    beerfranz_execution_context.execution_context:
+        class: Beerfranz\ExecutionContext\ExecutionContext
+        arguments:
+            $userClass: '%beerfranz_execution_context.user_class%'
+            $fallbackIdentifiers: '%beerfranz_execution_context.fallback_user_identifiers%'
+            $logger: '@logger'
+            $registry: '@doctrine'
+
+    Beerfranz\ExecutionContext\ExecutionContext: 
+        public: true
+        alias: beerfranz_execution_context.execution_context

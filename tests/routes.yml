@@ -1,0 +1,9 @@
+controller:
+    resource:
+        path: AppTest/Controller/
+        namespace: Beerfranz\ExecutionContext\AppTest\Controller
+    type: attribute
+
+api_platform:
+    resource: .
+    type: api_platform

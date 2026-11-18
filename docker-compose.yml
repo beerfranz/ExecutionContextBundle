@@ -1,0 +1,17 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: execution-context-bundle:local
+    working_dir: /app
+    volumes:
+      - .:/app
+    tty: true
+    stdin_open: true
+    networks:
+      - local
+
+networks:
+  local:
+    external: true
