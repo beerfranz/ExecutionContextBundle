@@ -1,3 +1,4 @@
+composer.lock
 vendor
 tests_coverage
 .phpunit.result.cache
