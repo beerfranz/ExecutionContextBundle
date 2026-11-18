@@ -106,7 +106,7 @@ class ExecutionContext implements ResetInterface
         return $user;
     }
 
-    public function getFallbackIdentifier(?string $context): string
+    protected function getFallbackIdentifier(?string $context): string
     {
         if (isset($this->fallbackIdentifiers[$context]))
             return $this->fallbackIdentifiers[$context];

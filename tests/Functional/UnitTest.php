@@ -47,6 +47,12 @@ class UnitTest extends KernelTestCase
         $this->assertEquals(null, $executionContext->getTenantId());
         $executionContext->setTenantId('unit-test');
         $this->assertEquals('unit-test', $executionContext->getTenantId());
+
+        $this->assertEquals(null, $executionContext->getCurrentMessage());
+
+        $message = $executionContext->newMessage();
+        $this->assertEquals(true, $message instanceof Message);
+        
     }
 
     public function testMessage(): void
