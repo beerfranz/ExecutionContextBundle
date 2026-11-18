@@ -71,7 +71,8 @@ trait ExecutionContextMessengerTrait
 
     protected function messengerReset(): void
     {
-    	$this->setCurrentMessage(null);
-    	$this->logger->info('reset messenger context. correlationId: '. $this->currentMessage?->getCorrelationId());
+        $correlationId = $this->currentMessage?->getCorrelationId();
+        $this->setCurrentMessage(null);
+        $this->logger->info('reset messenger context. correlationId: '. $correlationId);
     }
 }
