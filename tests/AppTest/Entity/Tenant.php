@@ -55,6 +55,6 @@ class Tenant implements ExecutionContextTenantInterface
 
     public function getTenantIdentifier(): string
     {
-        return $this->uuid->toString();
+        return $this->name;
     }
 }

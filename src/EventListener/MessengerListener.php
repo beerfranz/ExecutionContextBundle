@@ -17,7 +17,7 @@ class MessengerListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            WorkerMessageReceivedEvent::class => 'onMessageReceived',
+            WorkerMessageReceivedEvent::class => ['onMessageReceived', 100],
         ];
     }
 

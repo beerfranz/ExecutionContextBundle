@@ -4,7 +4,6 @@ namespace Beerfranz\ExecutionContext\AppTest\Entity;
 
 use Beerfranz\ExecutionContext\AppTest\Repository\AuditBackupRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: AuditBackupRepository::class)]
 class AuditBackup
@@ -17,11 +16,11 @@ class AuditBackup
     #[ORM\Column(length: 255)]
     private ?string $subjectKind = null;
 
-    #[ORM\Column(type: 'uuid', nullable: false)]
-    protected ?Uuid $subject = null;
+    #[ORM\Column(nullable: false)]
+    protected ?string $subject = null;
 
-    #[ORM\Column(type: 'uuid', nullable: false)]
-    protected ?Uuid $actor = null;
+    #[ORM\Column(nullable: false)]
+    protected ?string $actor = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $datetime = null;
@@ -29,11 +28,11 @@ class AuditBackup
     #[ORM\Column(length: 255)]
     private ?string $action = null;
 
-    #[ORM\Column(type: 'uuid', nullable: true)]
-    private ?Uuid $correlationId = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $correlationId = null;
 
-    #[ORM\Column(type: 'uuid', nullable: true)]
-    private ?Uuid $causationId = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $causationId = null;
 
     public function getId(): int
     {
@@ -52,24 +51,24 @@ class AuditBackup
         return $this;
     }
 
-    public function getSubject(): ?Uuid
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
 
-    public function setSubject(Uuid $subject): static
+    public function setSubject(string $subject): static
     {
         $this->subject = $subject;
 
         return $this;
     }
 
-    public function getActor(): ?Uuid
+    public function getActor(): ?string
     {
         return $this->actor;
     }
 
-    public function setActor(Uuid $actor): static
+    public function setActor(string $actor): static
     {
         $this->actor = $actor;
 
@@ -100,24 +99,24 @@ class AuditBackup
         return $this;
     }
 
-    public function getCorrelationId(): ?Uuid
+    public function getCorrelationId(): ?string
     {
         return $this->correlationId;
     }
 
-    public function setCorrelationId(?Uuid $correlationId): static
+    public function setCorrelationId(?string $correlationId): static
     {
         $this->correlationId = $correlationId;
 
         return $this;
     }
 
-    public function getCausationId(): ?Uuid
+    public function getCausationId(): ?string
     {
         return $this->causationId;
     }
 
-    public function setCausationId(?Uuid $causationId): static
+    public function setCausationId(?string $causationId): static
     {
         $this->causationId = $causationId;
 

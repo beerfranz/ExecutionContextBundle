@@ -85,10 +85,14 @@ api_platform:
 beerfranz_execution_context:
     user_class: 'Beerfranz\ExecutionContext\AppTest\Entity\User'
     fallback_user_identifiers:
-        default: 00000000-0000-8000-a000-000000000000
-        http: 00000000-0000-8000-a000-000000000001
-        command: 00000000-0000-8000-a000-000000000002
-        messenger: 00000000-0000-8000-a000-000000000003
+        default: default
+        http: default-http
+        command: default-command
+        messenger: default-messenger
+        # default: 00000000-0000-8000-a000-000000000000
+        # http: 00000000-0000-8000-a000-000000000001
+        # command: 00000000-0000-8000-a000-000000000002
+        # messenger: 00000000-0000-8000-a000-000000000003
 
 services:
     _defaults:

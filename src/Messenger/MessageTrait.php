@@ -9,16 +9,16 @@ trait MessageTrait
 {
 
 	// Uniq ID of the message
-	protected ?Uuid $eventId = null;
+	protected ?string $eventId = null;
 
 	// Message timestamp
-	protected ?\DateTimeImmutable $timestamp = null;
+	protected ?string $timestamp = null;
 
 	// Root parent message
-	protected ?Uuid $correlationId = null;
+	protected ?string $correlationId = null;
 
 	// Direct message parent
-	protected ?Uuid $causationId = null;
+	protected ?string $causationId = null;
 
 	// User identifier
 	protected ?string $userId = null;
@@ -29,18 +29,18 @@ trait MessageTrait
 	// The Id of the producer of the message
 	protected ?string $producerId = null;
 
-	
-
 	// Message version
 	protected int $version = 1;
 
 	protected bool $dryrun = false;
 	
-	public function __construct() {
-	    $this->eventId = Uuid::v7();
-	    $this->timestamp = new \DateTimeImmutable();
+	public function __construct(?string $eventId = null) {
+		if ($eventId === null)
+			$eventId = Uuid::v7()->toString();
+	    $this->eventId = $eventId;
+	    $this->timestamp = new \DateTimeImmutable()->format('c');
 	    $this->version = 1;
-	    $this->correlationId = $this->eventId;
+	    $this->correlationId = $eventId;
 	    $this->causationId = null;
   	}
 
@@ -77,17 +77,17 @@ trait MessageTrait
 		return $this;
 	}
 
-	public function getEventId(): ?Uuid
+	public function getEventId(): ?string
 	{
 		return $this->eventId;
 	}
 
-	public function getCorrelationId(): ?Uuid
+	public function getCorrelationId(): ?string
 	{
 		return $this->correlationId;
 	}
 
-	public function getCausationId(): ?Uuid
+	public function getCausationId(): ?string
 	{
 		return $this->causationId;
 	}
@@ -108,7 +108,7 @@ trait MessageTrait
 		return $this->version;
 	}
 
-	public function getTimestamp(): ?\DateTimeImmutable
+	public function getTimestamp(): ?string
 	{
 		return $this->timestamp;
 	}
@@ -123,6 +123,4 @@ trait MessageTrait
 		$this->producerId = $producerId;
 		return $this;
 	}
-
-
 }

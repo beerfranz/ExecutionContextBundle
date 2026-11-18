@@ -8,6 +8,8 @@ use Beerfranz\ExecutionContext\ExecutionContext;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Psr\Log\LoggerInterface;
+
 
 #[AsEntityListener]
 class AuditListener
@@ -15,11 +17,13 @@ class AuditListener
     public function __construct(
         protected MessageBusInterface $bus,
         protected ExecutionContext $executionContext,
+        protected LoggerInterface $logger,
     ) { }
 
     public function postPersist(Audit $audit, PostPersistEventArgs $event)
     {
-        $message = $this->executionContext->newMessage(AuditBackupMessage::class);
+        $this->logger->info('audit created for '.$audit->getSubject());
+        $message = $this->executionContext->newMessage(AuditBackupMessage::class, 'audit-'.$audit->getSubject());
 
         $message->auditSubjectKind = $audit->getSubjectKind();
         $message->auditSubjectId = $audit->getSubject();

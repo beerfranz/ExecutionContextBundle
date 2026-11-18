@@ -3,6 +3,7 @@
 namespace Beerfranz\ExecutionContext\AppTest\Command;
 
 use Beerfranz\ExecutionContext\AppTest\Service\TenantService;
+use Beerfranz\ExecutionContext\ExecutionContext;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,6 +16,7 @@ class CreateTenantCommand extends Command
 
 	public function __construct(
         protected TenantService $service,
+        protected ExecutionContext $executionContext,
 	)
     {
         parent::__construct();
@@ -31,6 +33,7 @@ class CreateTenantCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
     	try {
+            $this->executionContext->init(ExecutionContext::COMMAND);
             $name = $input->getArgument('name');
             $tenant = $this->service->create($name);
 

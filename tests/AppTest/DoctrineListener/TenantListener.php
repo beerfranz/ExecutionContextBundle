@@ -10,6 +10,8 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Psr\Log\LoggerInterface;
+
 
 #[AsEntityListener]
 class TenantListener
@@ -17,14 +19,16 @@ class TenantListener
     public function __construct(
         protected MessageBusInterface $bus,
         protected ExecutionContext $executionContext,
+        protected LoggerInterface $logger,
     ) { }
 
     public function postPersist(Tenant $tenant, PostPersistEventArgs $event)
     {
-        $message = $this->executionContext->newMessage(AuditMessage::class);
+        $this->logger->info('tenant created :'.$tenant->getName());
+        $message = $this->executionContext->newMessage(AuditMessage::class, $tenant->getTenantIdentifier());
 
         $message->auditSubjectKind = 'tenant';
-        $message->auditSubjectId = $tenant->getUuid();
+        $message->auditSubjectId = $tenant->getName();
         $message->setProducerId('tenant');
         $message->setTenantId($tenant->getTenantIdentifier());
         $message->eventType = 'tenant.created';

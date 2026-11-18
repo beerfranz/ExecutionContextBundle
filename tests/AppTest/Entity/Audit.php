@@ -12,7 +12,6 @@ use Beerfranz\ExecutionContext\AppTest\DoctrineListener\AuditListener;
 use Beerfranz\ExecutionContext\AppTest\Repository\AuditRepository;
 use Beerfranz\ExecutionContext\Entity\ExecutionContextTenantInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: AuditRepository::class)]
 #[ORM\EntityListeners([AuditListener::class])]
@@ -39,11 +38,11 @@ class Audit implements ExecutionContextTenantInterface
     #[ORM\Column(length: 255)]
     private ?string $subjectKind = null;
 
-    #[ORM\Column(type: 'uuid', nullable: false)]
-    protected ?Uuid $subject = null;
+    #[ORM\Column(nullable: false)]
+    protected ?string $subject = null;
 
-    #[ORM\Column(type: 'uuid', nullable: false)]
-    protected ?Uuid $actor = null;
+    #[ORM\Column(nullable: true)]
+    protected ?string $actor = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $datetime = null;
@@ -51,14 +50,14 @@ class Audit implements ExecutionContextTenantInterface
     #[ORM\Column(length: 255)]
     private ?string $action = null;
 
-    #[ORM\Column(type: 'uuid', nullable: true)]
-    private ?Uuid $correlationId = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $tenantId = null;
 
-    #[ORM\Column(type: 'uuid', nullable: true)]
-    private ?Uuid $causationId = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $correlationId = null;
 
-    #[ORM\Column(type: 'uuid', nullable: true)]
-    private ?Uuid $tenantId = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $causationId = null;
 
     public function getId(): int
     {
@@ -77,24 +76,24 @@ class Audit implements ExecutionContextTenantInterface
         return $this;
     }
 
-    public function getSubject(): ?Uuid
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
 
-    public function setSubject(Uuid $subject): static
+    public function setSubject(string $subject): static
     {
         $this->subject = $subject;
 
         return $this;
     }
 
-    public function getActor(): ?Uuid
+    public function getActor(): ?string
     {
         return $this->actor;
     }
 
-    public function setActor(Uuid $actor): static
+    public function setActor(string $actor): static
     {
         $this->actor = $actor;
 
@@ -125,36 +124,36 @@ class Audit implements ExecutionContextTenantInterface
         return $this;
     }
 
-    public function getCorrelationId(): ?Uuid
+    public function getCorrelationId(): ?string
     {
         return $this->correlationId;
     }
 
-    public function setCorrelationId(?Uuid $correlationId): static
+    public function setCorrelationId(?string $correlationId): static
     {
         $this->correlationId = $correlationId;
 
         return $this;
     }
 
-    public function getCausationId(): ?Uuid
+    public function getCausationId(): ?string
     {
         return $this->causationId;
     }
 
-    public function setCausationId(?Uuid $causationId): static
+    public function setCausationId(?string $causationId): static
     {
         $this->causationId = $causationId;
 
         return $this;
     }
 
-    public function getTenantId(): ?Uuid
+    public function getTenantId(): ?string
     {
         return $this->tenantId;
     }
 
-    public function setTenantId(?Uuid $tenantId): static
+    public function setTenantId(?string $tenantId): static
     {
         $this->tenantId = $tenantId;
 
@@ -163,6 +162,6 @@ class Audit implements ExecutionContextTenantInterface
 
     public function getTenantIdentifier(): string
     {
-        return $this->tenantId->toString();
+        return $this->tenantId;
     }
 }

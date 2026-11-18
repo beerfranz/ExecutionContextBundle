@@ -3,7 +3,6 @@
 namespace Beerfranz\ExecutionContext\AppTest\Message;
 
 use Beerfranz\ExecutionContext\Messenger\Message;
-use Symfony\Component\Uid\Uuid;
 
 class AuditBackupMessage extends Message
 {
@@ -16,7 +15,7 @@ class AuditBackupMessage extends Message
 
 	public ?string $auditAction = null;
 	public ?string $auditSubjectKind = null;
-	public ?Uuid $auditSubjectId = null;
+	public ?string $auditSubjectId = null;
 	public ?\DatetimeImmutable $auditTimestamp = null;
 
 }

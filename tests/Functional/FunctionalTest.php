@@ -124,7 +124,7 @@ class FunctionalTest extends ApiTestCase
         $this->assertStringContainsString('Tenant newTenant created', $output);
 
         // expect user is default because this command doestn't support identification
-        $this->assertFlow($tenantName, self::getFallbackUserIdentifier('default'), true);
+        $this->assertFlow($tenantName, self::getFallbackUserIdentifier('command'));
     }
 
     public function testCommandUser1(): void
@@ -267,7 +267,7 @@ class FunctionalTest extends ApiTestCase
         // Check audit
         $auditRepo = self::getContainer()->get(AuditRepository::class);
         $audit = $auditRepo->findOneBy(['subject' => $auditMessage->auditSubjectId]);
-        $this->assertEquals($tenant->getUuid(), $audit->getSubject());
+        $this->assertEquals($tenant->getTenantIdentifier(), $audit->getSubject());
         $this->assertEquals($expectedActor, $audit->getActor());
 
         // Check auditBackup

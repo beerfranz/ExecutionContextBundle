@@ -18,27 +18,24 @@ trait ExecutionContextMessengerTrait
 
     public function setCurrentMessage(?MessageInterface $currentMessage): self
     {
-        $this->logger->info('set current message eventId: '.$currentMessage?->getEventId());
         $this->currentMessage = $currentMessage;
         return $this;
     }
 
-    public function newMessage(?string $messageClass = null): MessageInterface
+    public function newMessage(?string $messageClass = null, ?string $eventId = null): MessageInterface
     {
         if ($messageClass)
-            $message = new $messageClass();
+            $message = new $messageClass($eventId);
         else
-            $message = new Message();
+            $message = new Message($eventId);
 
         if (!$message instanceof MessageInterface)
         	throw new \Exception('Only message implementing Beerfranz\ExecutionContext\Messenger\MessageInterface can be generated.');
         
         if ($this->currentMessage !== null) {
             $message->setParent($this->currentMessage);
-            $this->logger->info('new message with parent '.$message::class.' id '.$message->getEventId().' with causation '.$message->getCausationId().'  correlation: ' . $message->getCorrelationId());
             return $message;
         }
-        $this->logger->info('new message without parent '.$message::class.' id '.$message->getEventId().' with causation '.$message->getCausationId().'  correlation: ' . $message->getCorrelationId());
         $message->setUserId($this->user?->getUserIdentifier());
         $message->setTenantId($this->tenantId);
         return $message;
@@ -46,9 +43,9 @@ trait ExecutionContextMessengerTrait
 
     public function initFromEvent(WorkerMessageReceivedEvent $event): void
     {
+
         $envelope = $event->getEnvelope();
         $message = $envelope->getMessage();
-
         if ($message instanceof MessageInterface)
         {
             $userId = $message->getUserId();
@@ -65,14 +62,12 @@ trait ExecutionContextMessengerTrait
                 null,
                 null,
             );
-            $this->setCurrentMessage($message);
+            $this->setCurrentMessage(null);
         }
     }
 
     protected function messengerReset(): void
     {
-        $correlationId = $this->currentMessage?->getCorrelationId();
         $this->setCurrentMessage(null);
-        $this->logger->info('reset messenger context. correlationId: '. $correlationId);
     }
 }

@@ -22,7 +22,8 @@ class CommandListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ConsoleEvents::COMMAND   => 'onCommand'
+            ConsoleEvents::COMMAND => ['onCommand', 100],
+            ConsoleEvents::TERMINATE => ['onTerminate', -100],
         ];
     }
 
@@ -48,5 +49,10 @@ class CommandListener implements EventSubscriberInterface
             $user,
             $dryrun,
         );
+    }
+
+    public function onTerminate(ConsoleCommandEvent $event): void
+    {
+        $this->executionContext->reset();
     }
 }

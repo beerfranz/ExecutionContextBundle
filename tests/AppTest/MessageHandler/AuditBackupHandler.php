@@ -8,7 +8,6 @@ use Beerfranz\ExecutionContext\AppTest\Repository\AuditBackupRepository;
 use Beerfranz\ExecutionContext\ExecutionContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Save audit logs in the database
@@ -30,11 +29,11 @@ class AuditBackupHandler
     $actor = $this->executionContext->getUser()->getUserIdentifier();
 
     $audit = (new AuditBackup())
-      ->setActor(Uuid::fromString($actor))
+      ->setActor($actor)
       ->setAction($message->auditAction)
       ->setSubjectKind($message->auditSubjectKind)
       ->setSubject($message->auditSubjectId)
-      ->setDatetime($datetime)
+      ->setDatetime(\DateTimeImmutable::createFromFormat(\DateTimeInterface::ISO8601, $datetime))
       ->setCausationId($message->getCausationId())
       ->setCorrelationId($message->getCorrelationId())
     ;
@@ -42,7 +41,7 @@ class AuditBackupHandler
     $this->repo->getEntityManager()->persist($audit);
     $this->repo->getEntityManager()->flush();
 
-    $this->logger->info('{actor} {action} {kind}', [
+    $this->logger->info('auditBackup: {actor} {action} {kind}', [
       'actor' => $message->getUserId(),
       'action' => $message->auditAction,
       'kind' => $message->auditSubjectKind,
