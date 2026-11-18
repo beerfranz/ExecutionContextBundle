@@ -22,11 +22,14 @@ class AuditHandler
   ) { }
 
   #[AsMessageHandler]
-  public function auditMessage(AuditMessage $message)
+  public function auditMessage(AuditMessage $message): void
   {
 
     $datetime = $message->getTimestamp();
     $actor = $this->executionContext->getUser()->getUserIdentifier();
+
+    if ($this->executionContext->isDryRun())
+      return;
 
     $audit = (new Audit())
       ->setActor($actor)

@@ -241,6 +241,28 @@ class FunctionalTest extends ApiTestCase
         $this->assertEquals(self::getFallbackUserIdentifier('messenger'), $auditBackupMessage->getUserId());
     }
 
+    public function testMessengerDryRun(): void
+    {
+        $userId = Uuid::v7();
+        $subject = Uuid::v7();
+        $message = new AuditMessage();
+        $message->setUserId($userId);
+        $message->setTenantId(Uuid::v7());
+        $message->setDryRun(true);
+        $message->auditAction = 'test';
+        $message->auditSubjectKind = 'test';
+        $message->auditSubjectId = $subject;
+
+        $this->transport('audit')->send($message);
+        $this->transport('audit')->queue()->assertCount(1);
+        $this->transport('audit')->process();
+        $auditRepo = self::getContainer()->get(AuditRepository::class);
+        $audit = $auditRepo->findOneBy(['subject' => $subject]);
+
+        // Assert no audit have been created
+        $this->assertEquals(null, $audit);
+    }
+
     protected function assertFlow(
         string $tenantName,
         $expectedActor,
