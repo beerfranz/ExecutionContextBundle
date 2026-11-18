@@ -1,7 +1,7 @@
 {
     "name": "beerfranz/execution-context-bundle",
     "description": "Symfony bundle providing an ExecutionContext (current user + execution context).",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
