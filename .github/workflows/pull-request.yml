@@ -6,30 +6,38 @@ on:
 
 jobs:
   test:
+    name: PHP ${{ matrix.php }} / Symfony ${{ matrix.symfony }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.2'
+            symfony: '7.4.*'
+          - php: '8.4'
+            symfony: '8.0.*'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php }}
           # extensions: pdo_mysql, intl, redis, zip
           coverage: pcov
           tools: composer:v2, phpstan
-      - name: Get Composer cache dir
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Validate Composer
         run: composer validate --strict
-        
-      - uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: composer-
 
-      - run: composer install --prefer-dist --no-progress
+      - name: Install dependencies
+        run: |
+          composer require --no-interaction --no-update \
+            symfony/framework-bundle:${{ matrix.symfony }} \
+            symfony/console:${{ matrix.symfony }} \
+            symfony/messenger:${{ matrix.symfony }} \
+            symfony/security-bundle:${{ matrix.symfony }} \
+            symfony/uid:${{ matrix.symfony }}
+          composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
