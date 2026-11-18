@@ -40,12 +40,16 @@ trait MessageTrait
 	    $this->eventId = Uuid::v7();
 	    $this->timestamp = new \DateTimeImmutable();
 	    $this->version = 1;
-	    $this->correlationId = $this->eventId;
+	    $this->correlationId = null;
+	    $this->causationId = null;
   	}
 
 	public function setParent(MessageInterface $parent)
   	{
-	    $this->correlationId = $parent->getCorrelationId();
+  		if ($parent->getCorrelationId() !== null)
+	    	$this->correlationId = $parent->getCorrelationId();
+	    else
+	    	$this->correlationId = $parent->getEventId();
 	    $this->causationId = $parent->getEventId();
 	    $this->userId = $parent->getUserId();
 	    $this->tenantId = $parent->getTenantId();

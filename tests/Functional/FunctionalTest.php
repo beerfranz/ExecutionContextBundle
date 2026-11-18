@@ -124,7 +124,7 @@ class FunctionalTest extends ApiTestCase
         $this->assertStringContainsString('Tenant newTenant created', $output);
 
         // expect user is default because this command doestn't support identification
-        $this->assertFlow($tenantName, self::getFallbackUserIdentifier('default'));
+        $this->assertFlow($tenantName, self::getFallbackUserIdentifier('default'), true);
     }
 
     public function testCommandUser1(): void
@@ -244,6 +244,7 @@ class FunctionalTest extends ApiTestCase
     protected function assertFlow(
         string $tenantName,
         $expectedActor,
+        bool $debug = false,
     ): void
     {
         // Get tenant
@@ -255,6 +256,9 @@ class FunctionalTest extends ApiTestCase
         $this->transport('audit')->queue()->assertCount(1);
         $messages = $this->transport('audit')->queue()->messages();
         $auditMessage = $messages[0];
+        if ($debug) {
+            var_dump($auditMessage);
+        }
         $this->assertEquals($expectedActor, $auditMessage->getUserId());
 
         // process message
@@ -270,7 +274,13 @@ class FunctionalTest extends ApiTestCase
         $this->transport('auditBackup')->queue()->assertCount(1);
         $messages = $this->transport('auditBackup')->queue()->messages();
         $auditBackupMessage = $messages[0];
+        if ($debug) {
+            var_dump($auditBackupMessage);
+        }
         $this->assertEquals($expectedActor, $auditBackupMessage->getUserId());
+        $this->assertEquals($tenant->getTenantIdentifier(), $auditBackupMessage->getTenantId());
+        $this->assertEquals($auditMessage->getEventId(), $auditBackupMessage->getCausationId());
+        $this->assertEquals($auditMessage->getEventId(), $auditBackupMessage->getCorrelationId());
     }
 
 }

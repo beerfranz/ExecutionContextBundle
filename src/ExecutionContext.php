@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Beerfranz\ExecutionContext;
 
 use Beerfranz\ExecutionContext\Entity\ExecutionContextInternalUser;
+use Beerfranz\ExecutionContext\Messenger\ExecutionContextMessengerTrait;
 use Doctrine\Persistence\ManagerRegistry;
-use OpenTelemetry\API\Globals;
-use OpenTelemetry\API\Trace\StatusCode;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
@@ -15,10 +14,11 @@ use Symfony\Contracts\Service\ResetInterface;
 
 class ExecutionContext implements ResetInterface
 {
+    use ExecutionContextMessengerTrait;
+
     protected string $context;
     protected ?UserInterface $user;
     protected bool $dryrun;
-    protected ?string $traceId;
     protected ?string $tenantId;
 
     // http: classic context from an HTTP request
@@ -53,6 +53,7 @@ class ExecutionContext implements ResetInterface
                 implode(', ', self::AVAILABLE_CONTEXTS),
             ));
         }
+        $this->reset();
 
         $this->context = $context;
         $this->user = $user;
@@ -60,9 +61,9 @@ class ExecutionContext implements ResetInterface
         {
             $this->user = $this->resolveUserId(null, $context);
         }
-        $this->dryrun = $dryrun;
-        $this->tenantId = $tenantId;
-
+        $this->setDryRun($dryrun)
+            ->setTenantId($tenantId)
+        ;
         $this->logger->debug('Execution context initiated', [
             'user' => $this->user->getUserIdentifier(),
             'context' => $context,
@@ -73,10 +74,10 @@ class ExecutionContext implements ResetInterface
     {
         $this->context = self::HTTP;
         $this->user = null;
-        $this->dryrun = false;
-        $this->traceId = null;
-        $this->tenantId = null;
-
+        $this->setDryRun(false)
+            ->setTenantId(null)
+        ;
+        $this->messengerReset();
         $this->logger->debug('Execution context reset');
     }
 
@@ -171,17 +172,6 @@ class ExecutionContext implements ResetInterface
         return $this->dryrun;
     }
 
-    public function getTraceId(): ?string
-    {
-        return $this->traceId;
-    }
-
-    public function setTraceId(?string $traceId): self
-    {
-        $this->traceId = $traceId;
-        return $this;
-    }
-
     public function getTenantId(): ?string
     {
         return $this->tenantId;
@@ -193,21 +183,4 @@ class ExecutionContext implements ResetInterface
         return $this;
     }
 
-    public function getTracer($tracerName)
-    {
-        $provider = Globals::tracerProvider();
-        return $provider->getTracer($tracerName, '0.1.0', TraceAttributes::SCHEMA_URL);
-    }
-
-    public function newSpan($tracer)
-    {
-        return $tracer->spanBuilder($name)
-               ->setAttribute(TraceAttributes::CODE_FUNCTION, '')
-               ->setAttribute(TraceAttributes::CODE_NAMESPACE, '');
-    }
-
-    public function closeSpan($tracer): void
-    {
-
-    }
 }
