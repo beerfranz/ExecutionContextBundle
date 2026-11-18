@@ -46,10 +46,7 @@ trait MessageTrait
 
 	public function setParent(MessageInterface $parent)
   	{
-  		if ($parent->getCorrelationId() !== null)
-	    	$this->correlationId = $parent->getCorrelationId();
-	    else
-	    	$this->correlationId = $parent->getEventId();
+	    $this->correlationId = $parent->getCorrelationId();
 	    $this->causationId = $parent->getEventId();
 	    $this->userId = $parent->getUserId();
 	    $this->tenantId = $parent->getTenantId();
