@@ -29,8 +29,9 @@ trait ExecutionContextMessengerTrait
         else
             $message = new Message($eventId);
 
-        if (!$message instanceof MessageInterface)
-        	throw new \Exception('Only message implementing Beerfranz\ExecutionContext\Messenger\MessageInterface can be generated.');
+        if (!$message instanceof MessageInterface) {
+        	throw new \InvalidArgumentException('Only message implementing Beerfranz\ExecutionContext\Messenger\MessageInterface can be generated.');
+        }
         
         if ($this->currentMessage !== null) {
             $message->setParent($this->currentMessage);
@@ -59,8 +60,8 @@ trait ExecutionContextMessengerTrait
         } else {
             $this->init(
                 self::MESSENGER,
-                null,
-                null,
+                $this->resolveUserId(null, self::MESSENGER),
+                false,
             );
             $this->setCurrentMessage(null);
         }

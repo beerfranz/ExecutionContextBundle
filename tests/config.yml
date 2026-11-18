@@ -9,6 +9,7 @@ framework:
         transports:
             audit: test://
             auditBackup: test://
+            orphaned: test://
         routing:
             'Beerfranz\ExecutionContext\AppTest\Message\AuditMessage': audit
             'Beerfranz\ExecutionContext\AppTest\Message\AuditBackupMessage': auditBackup
@@ -40,18 +41,18 @@ monolog:
         app:
             type: stream
             path: php://stderr
-            level: debug
+            level: error
             channels: ["app"]
         error:
             type: stream
             path: php://stderr
             level: warning
-            channels: ["doctrine","messenger"]
+            channels: ["doctrine","messenger","request","security"]
         otherChans:
             type: stream
             path: php://stderr
             level: info
-            channels: ["!doctrine","!messenger", "!app"]
+            channels: ["!doctrine","!messenger", "!app","!request","!security"]
         # memory:
         #     type: test
         #     level: info

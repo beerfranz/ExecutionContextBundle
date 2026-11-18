@@ -6,6 +6,7 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use Beerfranz\ExecutionContext\AppTest\Entity\Tenant;
 use Beerfranz\ExecutionContext\AppTest\Entity\User;
 use Beerfranz\ExecutionContext\AppTest\Message\AuditMessage;
+use Beerfranz\ExecutionContext\AppTest\Message\OrphanedMessage;
 use Beerfranz\ExecutionContext\AppTest\Repository\AuditRepository;
 use Beerfranz\ExecutionContext\AppTest\Repository\TenantRepository;
 use Beerfranz\ExecutionContext\ExecutionContext;
@@ -282,6 +283,22 @@ class FunctionalTest extends ApiTestCase
         $messages = $this->transport('auditBackup')->queue()->messages();
         $auditBackupMessage = $messages[0];
         $this->assertEquals(self::getFallbackUserIdentifier('messenger'), $auditBackupMessage->getUserId());
+    }
+
+    public function testOrphanedMessage(): void
+    {
+        $message = new OrphanedMessage();
+        $this->transport('orphaned')->send($message);
+        $this->transport('orphaned')->process();
+
+        $container = static::getContainer();
+        $executionContext = $container->get(ExecutionContext::class);
+        $this->assertEquals('messenger', $executionContext->getContext());
+        $this->assertEquals(null, $executionContext->getCurrentMessage());
+        $this->assertEquals(
+            self::getFallbackUserIdentifier('messenger'),
+            $executionContext->getUser()->getUserIdentifier()
+        );
     }
 
     public function testMessengerDryRun(): void

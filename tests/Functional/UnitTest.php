@@ -2,9 +2,10 @@
 
 namespace Beerfranz\ExecutionContext\Tests\Functional;
 
+use Beerfranz\ExecutionContext\AppTest\Message\OrphanedMessage;
 use Beerfranz\ExecutionContext\Entity\ExecutionContextInternalUser;
-use Beerfranz\ExecutionContext\Messenger\Message;
 use Beerfranz\ExecutionContext\ExecutionContext;
+use Beerfranz\ExecutionContext\Messenger\Message;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UnitTest extends KernelTestCase
@@ -83,5 +84,15 @@ class UnitTest extends KernelTestCase
         $this->assertEquals($message->getEventId(), $subChildMessage->getCorrelationId());
         $this->assertEquals($childMessage->getEventId(), $subChildMessage->getCausationId());
 
+    }
+
+    public function testNewMessageException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Only message implementing Beerfranz');
+
+        $container = static::getContainer();
+        $executionContext = $container->get(ExecutionContext::class);
+        $message2 = $executionContext->newMessage(OrphanedMessage::class);
     }
 }
