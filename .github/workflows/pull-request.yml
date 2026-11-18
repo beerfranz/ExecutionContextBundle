@@ -1,0 +1,35 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          # extensions: pdo_mysql, intl, redis, zip
+          coverage: pcov
+          tools: composer:v2, phpstan
+      - name: Get Composer cache dir
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      - run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Static analysis
+        run: phpstan analyse src --level=8 --no-progress

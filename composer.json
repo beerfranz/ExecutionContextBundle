@@ -1,7 +1,6 @@
 {
     "name": "beerfranz/execution-context-bundle",
-    "description": "Symfony bundle providing an ExecutionContext (current user + execution context).",
-    "version": "0.1.0",
+    "description": "Symfony bundle providing unified ExecutionContext between HTTP, messenger and command.",
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
