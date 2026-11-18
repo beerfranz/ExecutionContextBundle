@@ -4,7 +4,7 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4.1",
         "symfony/console": "^7.4 || ^8.0",
         "symfony/framework-bundle": "^7.4 || ^8.0",
         "symfony/messenger": "^7.4 || ^8.0",
