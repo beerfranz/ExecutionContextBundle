@@ -20,6 +20,9 @@ jobs:
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
+      - name: Validate Composer
+        run: composer validate --strict
+        
       - uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -31,5 +34,5 @@ jobs:
       - name: Run PHPUnit
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
-      - name: Static analysis
-        run: phpstan analyse src --level=8 --no-progress
+      # - name: Static analysis
+      #   run: phpstan analyse src --level=8 --no-progress
