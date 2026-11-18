@@ -40,7 +40,7 @@ trait MessageTrait
 	    $this->eventId = Uuid::v7();
 	    $this->timestamp = new \DateTimeImmutable();
 	    $this->version = 1;
-	    $this->correlationId = null;
+	    $this->correlationId = $this->eventId;
 	    $this->causationId = null;
   	}
 
