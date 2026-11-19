@@ -34,6 +34,7 @@ jobs:
         run: |
           composer require --no-interaction --no-update \
             symfony/framework-bundle:${{ matrix.symfony }} \
+            symfony/dependency-injection:${{ matrix.symfony }} \
             symfony/console:${{ matrix.symfony }} \
             symfony/messenger:${{ matrix.symfony }} \
             symfony/security-bundle:${{ matrix.symfony }} \
