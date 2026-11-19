@@ -41,7 +41,7 @@ jobs:
           composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: vendor/bin/phpunit --coverage-text
 
       # - name: Static analysis
       #   run: phpstan analyse src --level=8 --no-progress
