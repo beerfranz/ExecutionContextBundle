@@ -29,7 +29,8 @@ abstract class AbstractCommand extends Command
 		parent::__construct();
 	}
 
-	protected function initialize(InputInterface $input, OutputInterface $output) {
+	protected function initialize(InputInterface $input, OutputInterface $output): void
+	{
         $this->initializeExecutionContext($input, $output);
     }
 
