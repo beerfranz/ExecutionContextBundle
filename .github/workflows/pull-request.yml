@@ -33,12 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require --no-interaction --no-update \
-            symfony/framework-bundle:${{ matrix.symfony }} \
-            symfony/dependency-injection:${{ matrix.symfony }} \
-            symfony/console:${{ matrix.symfony }} \
-            symfony/messenger:${{ matrix.symfony }} \
-            symfony/security-bundle:${{ matrix.symfony }} \
-            symfony/uid:${{ matrix.symfony }}
+            symfony/framework-bundle:${{ matrix.symfony }}
           composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run PHPUnit
