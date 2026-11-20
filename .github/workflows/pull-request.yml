@@ -7,7 +7,6 @@ on:
 jobs:
   test:
     name: PHP ${{ matrix.php }} / Symfony ${{ matrix.symfony }}
-    # maybe remove matrix and use same versioning as symfony
     strategy:
       fail-fast: false
       matrix:
