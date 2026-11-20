@@ -229,4 +229,5 @@ beerfranz_execution_context:
 docker compose run --rm php composer update
 docker compose up
 docker compose run --rm php vendor/bin/phpunit --filter testCommandUser1
+docker compose run --rm php composer validate --strict
 ```

@@ -1,0 +1,42 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} / Symfony ${{ matrix.symfony }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.4'
+            symfony: '7.4.*'
+          - php: '8.4'
+            symfony: '8.1.*'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          # extensions: pdo_mysql, intl, redis, zip
+          coverage: pcov
+          tools: composer:v2, phpstan
+
+      - name: Validate Composer
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: |
+          composer require --no-interaction --no-update \
+            symfony/framework-bundle:${{ matrix.symfony }}
+          composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --coverage-text
+
+      # - name: Static analysis
+      #   run: phpstan analyse src --level=8 --no-progress

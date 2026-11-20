@@ -1,16 +1,27 @@
 {
     "name": "beerfranz/execution-context-bundle",
-    "description": "Symfony bundle providing an ExecutionContext (current user + execution context).",
-    "version": "0.1.0",
+    "description": "Symfony bundle providing unified ExecutionContext between HTTP, messenger and command.",
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": ">=8.1",
-        "symfony/console": "^6.0 || ^7.0",
-        "symfony/framework-bundle": "^6.0 || ^7.0",
-        "symfony/messenger": "^6.0 || ^7.0",
-        "symfony/security-bundle": "^6.0 || ^7.0",
-        "symfony/uid": "^6.0 || ^7.0"
+        "php": ">=8.4.1",
+        "symfony/console": "^7.4 || ^8.0",
+        "symfony/framework-bundle": "^7.4 || ^8.0",
+        "symfony/messenger": "^7.4 || ^8.0",
+        "symfony/security-bundle": "^7.4 || ^8.0",
+        "symfony/uid": "^7.4 || ^8.0"
+    },
+    "require-dev": {
+        "api-platform/core": "^4.3",
+        "doctrine/doctrine-bundle": "^3.0",
+        "doctrine/doctrine-migrations-bundle": "^3.6",
+        "doctrine/orm": "^3.4",
+        "phpunit/phpunit": "^10.5",
+        "symfony/browser-kit": "^7.4 || ^8.0",
+        "symfony/http-client": "^7.4 || ^8.0",
+        "symfony/monolog-bundle": "^3.10 || ^4",
+        "symfony/yaml": "^7.4 || ^8.0",
+        "zenstruck/messenger-test": "^1.12"
     },
     "autoload": {
         "psr-4": {
@@ -22,20 +33,6 @@
             "Beerfranz\\ExecutionContext\\Tests\\": "tests/",
             "Beerfranz\\ExecutionContext\\AppTest\\": "tests/AppTest/"
         }
-    },
-    "require-dev": {
-        "api-platform/core": "^4.3",
-        "doctrine/doctrine-bundle": "^2.13",
-        "doctrine/doctrine-migrations-bundle": "^3.3",
-        "doctrine/orm": "^3.2",
-        "phpunit/phpunit": "^10.5",
-        "symfony/browser-kit": "^8.1",
-        "symfony/http-client": "^8.1",
-        "symfony/messenger": "^6.0 || ^7.0",
-        "symfony/monolog-bundle": "^3.10",
-        "symfony/var-exporter": "^6.0 || ^7.0",
-        "symfony/yaml": "^6.0 || ^7.0",
-        "zenstruck/messenger-test": "^1.12"
     },
     "suggest": {
         "open-telemetry/api": "To propagate the current trace ID into the ExecutionContext."
